@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMasterLab — Interactive C Programming Learning Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Top Navigation & Gamification HUD -->
+  <header class="top-nav">
+    <div class="brand" id="brandHome">
+      <div class="brand-logo">
+        <span class="bracket">#</span><span class="code-slash">C</span>
+      </div>
+      <div>
+        <h1 class="brand-title">CMasterLab</h1>
+        <span class="brand-subtitle">Interactive C Programming &amp; Memory Academy</span>
+      </div>
+    </div>
+
+    <!-- C Syllabus Unit Switcher -->
+    <div class="track-switcher" role="tablist" aria-label="C Syllabus Units">
+      <button class="track-btn active" data-unit="basics" role="tab">
+        <span class="lang-badge unit-1">U1</span>
+        <span>Basics &amp; Flow</span>
+      </button>
+      <button class="track-btn" data-unit="arrays" role="tab">
+        <span class="lang-badge unit-2">U2</span>
+        <span>Functions &amp; Arrays</span>
+      </button>
+      <button class="track-btn" data-unit="pointers" role="tab">
+        <span class="lang-badge unit-3">U3</span>
+        <span>Pointers &amp; RAM</span>
+      </button>
+      <button class="track-btn" data-unit="structs" role="tab">
+        <span class="lang-badge unit-4">U4</span>
+        <span>Structs &amp; Files</span>
+      </button>
+    </div>
+
+    <!-- Gamification HUD -->
+    <div class="hud-stats">
+      <div class="hud-pill streak-pill" title="Current Correct Answer Streak">
+        <span class="hud-icon">🔥</span>
+        <div>
+          <span class="hud-value" id="hudStreak">0</span>
+          <span class="hud-label">Streak</span>
+        </div>
+      </div>
+
+      <div class="hud-pill xp-pill" title="Total Experience Points">
+        <span class="hud-icon">⭐</span>
+        <div>
+          <span class="hud-value" id="hudXP">0 XP</span>
+          <span class="hud-label" id="hudLevel">Lv. 1 Novice</span>
+        </div>
+        <div class="xp-mini-bar">
+          <div class="xp-mini-fill" id="hudXPBar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <button class="instructor-toggle" id="instructorToggle" title="Toggle Instructor Mode (Show Solutions & Teaching Notes)">
+        <span>🎓 Instructor Mode: <strong id="instructorState">OFF</strong></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workspace Layout -->
+  <div class="app-layout">
+    <!-- Left Sidebar: Mode Navigation & C Syllabus Progress -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-heading">LEARNING MODES</div>
+        <nav class="mode-nav">
+          <button class="mode-btn active" data-mode="dashboard">
+            <span class="mode-icon">🧭</span>
+            <div class="mode-text">
+              <span class="mode-name">C Syllabus &amp; Modules</span>
+              <span class="mode-desc">Interactive notes &amp; examples</span>
+            </div>
+          </button>
+          <button class="mode-btn" data-mode="quiz">
+            <span class="mode-icon">🎯</span>
+            <div class="mode-text">
+              <span class="mode-name">C Quiz Arena</span>
+              <span class="mode-desc">Output prediction &amp; bug-hunt</span>
+            </div>
+          </button>
+          <button class="mode-btn" data-mode="challenges">
+            <span class="mode-icon">💻</span>
+            <div class="mode-text">
+              <span class="mode-name">C Coding Challenges</span>
+              <span class="mode-desc">GCC sandbox &amp; unit tests</span>
+            </div>
+          </button>
+          <button class="mode-btn" data-mode="visualizer">
+            <span class="mode-icon">🔬</span>
+            <div class="mode-text">
+              <span class="mode-name">Pointer &amp; RAM Tracer</span>
+              <span class="mode-desc">Step-by-step memory frames</span>
+            </div>
+          </button>
+          <button class="mode-btn" data-mode="achievements">
+            <span class="mode-icon">🏆</span>
+            <div class="mode-text">
+              <span class="mode-name">Badges &amp; Leaderboard</span>
+              <span class="mode-desc">Class ranks &amp; score report</span>
+            </div>
+          </button>
+        </nav>
+      </div>
+
+      <!-- C Unit Mastery Card -->
+      <div class="sidebar-section track-progress-card">
+        <div class="sidebar-heading">C SYLLABUS MASTERY</div>
+        <div class="mastery-item">
+          <div class="mastery-header">
+            <span><strong class="u1-text">U1</strong> Basics &amp; Loops</span>
+            <span id="masteryBasics">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill u1-fill" id="barBasics" style="width:0%"></div></div>
+        </div>
+        <div class="mastery-item">
+          <div class="mastery-header">
+            <span><strong class="u2-text">U2</strong> Functions &amp; Arrays</span>
+            <span id="masteryArrays">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill u2-fill" id="barArrays" style="width:0%"></div></div>
+        </div>
+        <div class="mastery-item">
+          <div class="mastery-header">
+            <span><strong class="u3-text">U3</strong> Pointers &amp; Memory</span>
+            <span id="masteryPointers">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill u3-fill" id="barPointers" style="width:0%"></div></div>
+        </div>
+        <div class="mastery-item">
+          <div class="mastery-header">
+            <span><strong class="u4-text">U4</strong> Structs &amp; File I/O</span>
+            <span id="masteryStructs">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill u4-fill" id="barStructs" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- Active Student Card -->
+      <div class="sidebar-section student-card">
+        <div class="student-header">
+          <div class="student-avatar" id="studentAvatar">👨‍💻</div>
+          <div class="student-info">
+            <input type="text" id="studentNameInput" class="student-name-input" value="Alex Mercer" aria-label="Student Name" />
+            <span class="student-rank-tag" id="studentRankTag">Rank #6 • Lv. 1</span>
+          </div>
+        </div>
+        <div class="student-quick-stats">
+          <div><strong id="statQuizzes">0</strong><span>Quizzes</span></div>
+          <div><strong id="statChallenges">0</strong><span>Challenges</span></div>
+          <div><strong id="statBadges">0/8</strong><span>Badges</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Dynamic Content Area -->
+    <main class="main-content">
+      <!-- 1. CURRICULUM & INTERACTIVE LESSONS VIEW -->
+      <section id="view-dashboard" class="view-section active">
+        <div class="hero-banner" id="trackHeroBanner">
+          <div class="hero-content">
+            <div class="hero-tag" id="heroTag">UNIT 1 • C FUNDAMENTALS</div>
+            <h2 class="hero-title" id="heroTitle">Variables, Control Flow &amp; Standard I/O</h2>
+            <p class="hero-desc" id="heroDesc">
+              Build a rock-solid foundation in ANSI C: format specifiers, arithmetic &amp; bitwise operators, conditional branching, and loop iteration.
+            </p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" id="startQuizBtn">⚡ Unit Quiz Arena (+50 XP)</button>
+              <button class="btn btn-secondary" id="startChallengeBtn">💻 Solve C Challenge (+100 XP)</button>
+              <button class="btn btn-ghost" id="startVisualizerBtn">🔬 Trace in RAM</button>
+            </div>
+          </div>
+          <div class="hero-code-preview">
+            <div class="code-window-header">
+              <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+              <span class="window-filename" id="heroFilename">unit1_demo.c</span>
+            </div>
+            <pre class="hero-code"><code id="heroCodeSnippet"></code></pre>
+          </div>
+        </div>
+
+        <div class="section-header-row">
+          <div>
+            <h3 class="section-title">Interactive Lecture Modules</h3>
+            <p class="section-subtitle">Select a topic card below to study key C concepts, inspect annotated code, and earn completion XP.</p>
+          </div>
+          <div class="filter-pills">
+            <span class="pill-info" id="moduleCompletionCount">0 / 3 Completed in Unit</span>
+          </div>
+        </div>
+
+        <div class="modules-grid" id="modulesGrid">
+          <!-- Populated dynamically from data.js -->
+        </div>
+
+        <!-- Module Reader Panel -->
+        <div class="lesson-panel" id="lessonPanel">
+          <div class="lesson-panel-header">
+            <div>
+              <span class="lesson-badge" id="lessonTopicBadge">Module 1.1</span>
+              <h3 id="lessonTitle">Select a Module Above</h3>
+            </div>
+            <button class="btn btn-success" id="completeLessonBtn">✓ Complete Module (+30 XP)</button>
+          </div>
+          <div class="lesson-body">
+            <div class="lesson-explanation" id="lessonExplanation"></div>
+            <div class="lesson-code-box">
+              <div class="code-window-header">
+                <span class="window-filename" id="lessonCodeFilename">example.c</span>
+                <button class="btn-xs" id="copyLessonCodeBtn">📋 Copy C Code</button>
+              </div>
+              <pre class="code-block"><code id="lessonCodeContent"></code></pre>
+              <div class="code-output-box">
+                <div class="output-label">GCC TERMINAL OUTPUT</div>
+                <pre id="lessonCodeOutput"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="instructor-note-box hidden" id="lessonInstructorNote">
+            <strong>🎓 Instructor Teaching Note &amp; Common Student Pitfalls:</strong>
+            <p id="lessonInstructorText"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. QUIZ ARENA VIEW -->
+      <section id="view-quiz" class="view-section">
+        <div class="quiz-top-bar">
+          <div>
+            <span class="section-eyebrow" id="quizTrackLabel">UNIT 1 QUIZ ARENA</span>
+            <h2 class="section-title">C Output Prediction, Concept &amp; Bug-Hunt</h2>
+          </div>
+          <div class="quiz-controls">
+            <div class="quiz-type-filter">
+              <button class="chip active" data-qfilter="all">All Unit Questions</button>
+              <button class="chip" data-qfilter="output">Predict Output</button>
+              <button class="chip" data-qfilter="bug">Spot the Bug</button>
+              <button class="chip" data-qfilter="concept">Concept MCQ</button>
+            </div>
+            <div class="combo-badge" id="quizComboBadge">Combo: 1.0x XP</div>
+          </div>
+        </div>
+
+        <div class="quiz-container">
+          <div class="quiz-progress-strip">
+            <div class="quiz-progress-fill" id="quizProgressFill" style="width: 20%"></div>
+          </div>
+
+          <div class="quiz-card" id="quizCard">
+            <div class="quiz-meta-row">
+              <span class="q-type-tag" id="qTypeTag">PREDICT OUTPUT</span>
+              <span class="q-difficulty" id="qDifficulty">Medium • +40 XP</span>
+              <span class="q-counter" id="qCounter">Question 1 of 5</span>
+            </div>
+
+            <h3 class="q-prompt" id="qPrompt">What will the following C program print to standard output?</h3>
+
+            <div class="q-code-wrapper" id="qCodeWrapper">
+              <div class="code-window-header">
+                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                <span class="window-filename" id="qFilename">snippet.c</span>
+              </div>
+              <pre class="code-block"><code id="qCodeBlock"></code></pre>
+            </div>
+
+            <div class="q-options-grid" id="qOptionsGrid">
+              <!-- Populated dynamically -->
+            </div>
+
+            <!-- Feedback Box -->
+            <div class="q-feedback hidden" id="qFeedbackBox">
+              <div class="q-feedback-title" id="qFeedbackTitle">Correct!</div>
+              <p class="q-feedback-text" id="qFeedbackText"></p>
+            </div>
+
+            <!-- Instructor Answer Key Box -->
+            <div class="instructor-note-box hidden" id="quizInstructorBox">
+              <strong>🎓 Instructor Solution Key:</strong>
+              <span id="quizInstructorKey"></span>
+            </div>
+
+            <div class="quiz-footer-actions">
+              <button class="btn btn-secondary" id="prevQuestionBtn">← Previous</button>
+              <button class="btn btn-ghost" id="hintQuestionBtn">💡 Show Hint</button>
+              <button class="btn btn-primary" id="nextQuestionBtn">Next Question →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. CODING CHALLENGES VIEW -->
+      <section id="view-challenges" class="view-section">
+        <div class="challenge-header-bar">
+          <div class="challenge-selector-wrap">
+            <label for="challengeSelect" class="sr-only">Select C Coding Challenge</label>
+            <select id="challengeSelect" class="challenge-select"></select>
+            <span class="challenge-xp-badge" id="challengeXPBadge">+100 XP</span>
+          </div>
+          <div class="challenge-actions">
+            <button class="btn btn-ghost" id="challengeHintBtn">💡 Get Hint</button>
+            <button class="btn btn-secondary" id="resetCodeBtn">↺ Reset Starter Code</button>
+            <button class="btn btn-ghost hidden" id="fillSolutionBtn">🎓 Fill Official Solution</button>
+            <button class="btn btn-primary" id="runTestsBtn">▶ Compile &amp; Run C Tests</button>
+          </div>
+        </div>
+
+        <div class="challenge-workbench">
+          <!-- Left: Problem Specification -->
+          <div class="problem-pane">
+            <div class="problem-tags">
+              <span class="lang-pill" id="chalLangPill">C99 / C11</span>
+              <span class="diff-pill" id="chalDiffPill">Intermediate</span>
+              <span class="status-pill" id="chalStatusPill">Unsolved</span>
+            </div>
+            <h2 class="problem-title" id="chalTitle">Swap Two Integers Using Pointers</h2>
+            <p class="problem-desc" id="chalDesc"></p>
+
+            <div class="problem-spec-box">
+              <h4>📋 Function Requirements &amp; Constraints</h4>
+              <ul id="chalRequirements"></ul>
+            </div>
+
+            <div class="problem-examples" id="chalExamples"></div>
+
+            <div class="hint-drawer hidden" id="chalHintDrawer">
+              <strong>💡 Hint:</strong> <span id="chalHintText"></span>
+            </div>
+          </div>
+
+          <!-- Right: Interactive Code Editor & Test Runner -->
+          <div class="editor-pane">
+            <div class="editor-window">
+              <div class="code-window-header">
+                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                <span class="window-filename" id="editorFilename">solution.c</span>
+                <span class="compiler-tag" id="compilerTag">gcc -Wall -Wextra -std=c11</span>
+              </div>
+              <div class="editor-body">
+                <div class="line-numbers" id="editorLineNumbers">1</div>
+                <textarea id="codeEditor" class="code-textarea" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+              </div>
+            </div>
+
+            <!-- Compiler & Test Suite Output Console -->
+            <div class="console-window">
+              <div class="console-header">
+                <span>🧪 GCC Sandbox &amp; Unit Test Runner</span>
+                <span class="console-metrics" id="consoleMetrics">Ready to compile</span>
+              </div>
+              <div class="console-body" id="consoleOutput">
+                <div class="console-placeholder">Click <strong>"▶ Compile &amp; Run C Tests"</strong> to compile your C code and execute automated unit test cases.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. MEMORY & CODE TRACER (VISUALIZER) VIEW -->
+      <section id="view-visualizer" class="view-section">
+        <div class="section-header-row">
+          <div>
+            <span class="section-eyebrow">STEP-BY-STEP C EXECUTION ENGINE</span>
+            <h2 class="section-title">Interactive C Memory, Pointer &amp; Array Visualizer</h2>
+            <p class="section-subtitle">Step forward line-by-line to inspect how C variables, arrays, pointers (<code>*</code>, <code>&amp;</code>), and structs are stored at real hexadecimal memory addresses.</p>
+          </div>
+          <div class="visualizer-controls">
+            <button class="btn btn-secondary" id="traceResetBtn">⏮ Reset</button>
+            <button class="btn btn-secondary" id="tracePrevBtn">◀ Step Back</button>
+            <button class="btn btn-primary" id="traceNextBtn">Step Forward ▶</button>
+          </div>
+        </div>
+
+        <div class="visualizer-workbench">
+          <!-- Code with active line highlighter -->
+          <div class="trace-code-panel">
+            <div class="code-window-header">
+              <span class="window-filename" id="traceFilename">pointer_trace.c</span>
+              <span class="step-indicator" id="traceStepIndicator">Step 1 of 6</span>
+            </div>
+            <div class="trace-code-lines" id="traceCodeLines"></div>
+            <div class="trace-explanation-box">
+              <div class="trace-exp-title">🔍 What happens in CPU &amp; RAM on this line?</div>
+              <p id="traceStepExplanation"></p>
+            </div>
+          </div>
+
+          <!-- Memory Table (Stack & Heap + Console) -->
+          <div class="trace-memory-panel">
+            <div class="memory-card">
+              <div class="memory-card-header">
+                <span>🧠 RAM / Memory Frame (Addresses &amp; Values)</span>
+                <span class="memory-legend"><i class="leg-stack"></i> Variable / Array <i class="leg-heap"></i> Pointer / Struct</span>
+              </div>
+              <div class="memory-slots-grid" id="memorySlotsGrid">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <div class="memory-card">
+              <div class="memory-card-header">
+                <span>🖥 Standard Output (stdout)</span>
+              </div>
+              <pre class="trace-stdout" id="traceStdout"></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. ACHIEVEMENTS, LEADERBOARD & TEACHER REPORT VIEW -->
+      <section id="view-achievements" class="view-section">
+        <div class="section-header-row">
+          <div>
+            <span class="section-eyebrow">GAMIFICATION &amp; CLASSROOM ANALYTICS</span>
+            <h2 class="section-title">C Mastery Badges, Class Leaderboard &amp; Report</h2>
+          </div>
+          <div class="report-actions">
+            <button class="btn btn-secondary" id="exportReportBtn">📥 Export Student Report (.txt)</button>
+            <button class="btn btn-danger-outline" id="resetProgressBtn">🗑 Reset All Progress</button>
+          </div>
+        </div>
+
+        <div class="achievements-layout">
+          <!-- Badges Grid -->
+          <div class="badges-panel">
+            <h3>🏅 Unlockable C Programming Badges</h3>
+            <div class="badges-grid" id="badgesGrid">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Leaderboard Panel -->
+          <div class="leaderboard-panel">
+            <h3>🏆 CS101 C Programming Leaderboard</h3>
+            <p class="leaderboard-sub">Complete C quizzes, modules, and coding challenges to climb the class rankings!</p>
+            <div class="leaderboard-list" id="leaderboardList">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Toast Notification for XP & Badge Unlocks -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
